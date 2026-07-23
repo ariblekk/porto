@@ -16,17 +16,31 @@ export default function Scene() {
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(el.clientWidth, el.clientHeight);
     el.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      50,
-      el.clientWidth / el.clientHeight,
-      0.1,
-      100,
-    );
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
     camera.position.z = 6;
+
+    let baseZ = 6;
+    let lastW = 0;
+    const fit = () => {
+      const w = el.clientWidth;
+      const h = el.clientHeight;
+      if (!w || !h) return;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      // ponytail: skip buffer realloc on height-only change (mobile URL bar
+      // show/hide) — canvas CSS stretches via size-full. Add h to the check
+      // if pixel-perfect height ever matters.
+      if (w !== lastW) {
+        lastW = w;
+        renderer.setSize(w, h, false);
+      }
+      // responsive: pull camera back on narrow screens so the mesh fits
+      baseZ = camera.aspect < 1 ? 6 / camera.aspect : 6;
+    };
+    fit();
 
     // Main wireframe icosahedron
     const mesh = new THREE.Mesh(
@@ -88,21 +102,24 @@ export default function Scene() {
     };
     window.addEventListener("mousemove", onMouse);
 
-    const onResize = () => {
-      camera.aspect = el.clientWidth / el.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(el.clientWidth, el.clientHeight);
-    };
+    const onResize = () => fit();
     window.addEventListener("resize", onResize);
 
     let raf = 0;
+    let progress = 0;
     const timer = new THREE.Timer();
     const tick = () => {
       timer.update();
       const t = timer.getElapsed();
-      const progress =
-        window.scrollY /
-        Math.max(document.body.scrollHeight - window.innerHeight, 1);
+      // ponytail: lerped+clamped progress — mobile URL bar toggling changes
+      // innerHeight mid-scroll and made the raw value jump (scene snapped
+      // back). Smoothing absorbs it; clamp kills iOS rubber-band negatives.
+      const max = Math.max(
+        document.body.scrollHeight - window.innerHeight,
+        1,
+      );
+      const target = Math.min(Math.max(window.scrollY / max, 0), 1);
+      progress += (target - progress) * 0.08;
 
       mesh.rotation.y = t * 0.15 + progress * Math.PI * 2;
       mesh.rotation.x = t * 0.08 + progress * Math.PI;
@@ -111,7 +128,7 @@ export default function Scene() {
 
       camera.position.x += (mouse.x * 0.8 - camera.position.x) * 0.05;
       camera.position.y += (-mouse.y * 0.5 - camera.position.y) * 0.05;
-      camera.position.z = 6 - progress * 1.5;
+      camera.position.z = baseZ - progress * 1.5;
       camera.lookAt(0, 0, 0);
 
       renderer.render(scene, camera);
@@ -138,7 +155,7 @@ export default function Scene() {
     <div
       ref={ref}
       aria-hidden
-      className="fixed inset-0 -z-10 [&>canvas]:block"
+      className="fixed inset-0 -z-10 [&>canvas]:block [&>canvas]:size-full"
     />
   );
 }

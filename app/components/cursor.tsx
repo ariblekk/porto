@@ -20,8 +20,6 @@ export default function Cursor() {
     const setHover = (target: EventTarget | Element | null) => {
       const t = target instanceof Element ? target : null;
       hovering = !!t?.closest("a, button");
-      // hide the dot when a work preview image is showing
-      el.style.opacity = t?.closest("[data-preview]") ? "0" : "1";
       render(); // re-apply scale even when the mouse didn't move (e.g. scroll)
     };
 

@@ -1,13 +1,12 @@
 import { ArrowUpRight, Dot } from "lucide-react";
 import SceneLoader from "./components/scene-loader";
-import WorkPreview from "./components/work-preview";
 import Gsap from "./components/gsap";
 
 const works = [
-  { title: "Nebula Dashboard", tag: "Web App / 3D Data Viz", year: "2026", img: "/work/1.jpg" },
-  { title: "Orbit Commerce", tag: "E-commerce / Motion", year: "2025", img: "/work/2.jpg" },
-  { title: "Pulse Studio", tag: "Brand Site / WebGL", year: "2025", img: "/work/3.jpg" },
-  { title: "Atlas Journal", tag: "Editorial / Interaction", year: "2024", img: "/work/4.jpg" },
+  { title: "Nebula Dashboard", tag: "Web App / 3D Data Viz", year: "2026" },
+  { title: "Orbit Commerce", tag: "E-commerce / Motion", year: "2025" },
+  { title: "Pulse Studio", tag: "Brand Site / WebGL", year: "2025" },
+  { title: "Atlas Journal", tag: "Editorial / Interaction", year: "2024" },
 ];
 
 const marqueeItems = ["Design", "Development", "Motion", "3D", "WebGL", "GSAP"];
@@ -22,10 +21,9 @@ export default function Home() {
   return (
     <>
       <SceneLoader />
-      <WorkPreview />
       <Gsap>
         {/* Nav */}
-        <header className="fixed top-0 z-10 flex w-full items-center justify-between px-6 py-5 font-mono text-xs uppercase tracking-wider md:px-12 md:tracking-widest">
+        <header className="fixed top-0 z-10 flex w-full items-center justify-between bg-background/50 px-6 py-5 font-mono text-xs uppercase tracking-wider backdrop-blur-md md:px-12 md:tracking-widest">
           <span>
             <span className="sm:hidden">BCT — ©2026</span>
             <span className="hidden sm:inline">Blek Creative Tech — ©2026</span>
@@ -88,7 +86,6 @@ export default function Home() {
                 <li key={w.title} data-animate>
                   <a
                     href="#contact"
-                    data-preview={w.img}
                     className="group flex items-baseline justify-between gap-4 border-b border-foreground/10 py-6 transition-colors hover:border-accent sm:py-8"
                   >
                     <span className="flex items-baseline gap-4 sm:gap-6">
@@ -143,7 +140,7 @@ export default function Home() {
           </section>
         </main>
 
-        <footer className="flex flex-col items-center gap-4 border-t border-foreground/10 px-6 py-6 font-mono text-xs text-muted sm:flex-row sm:justify-between md:px-12">
+        <footer className="flex flex-col items-center gap-4 border-t border-foreground/10 bg-background/50 px-6 py-6 font-mono text-xs text-muted backdrop-blur-md sm:flex-row sm:justify-between md:px-12">
           <span>© 2026 Blek Creative Tech</span>
           <div className="flex gap-4 sm:gap-6">
             <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-accent">GitHub</a>
