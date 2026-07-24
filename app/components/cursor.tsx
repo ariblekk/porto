@@ -3,18 +3,21 @@
 import { useEffect, useRef } from "react";
 
 export default function Cursor() {
-  const ref = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    const dotEl = dotRef.current;
+    const ringEl = ringRef.current;
+    if (!dotEl || !ringEl) return;
 
     let hovering = false;
     let lastX = -1;
     let lastY = -1;
 
     const render = () => {
-      el.style.transform = `translate(${lastX}px, ${lastY}px) translate(-50%, -50%) scale(${hovering ? 2 : 1})`;
+      ringEl.style.transform = `translate(${lastX}px, ${lastY}px) translate(-50%, -50%) scale(${hovering ? 1.5 : 1})`;
+      dotEl.style.transform = `translate(${lastX}px, ${lastY}px) translate(-50%, -50%)`;
     };
 
     const setHover = (target: EventTarget | Element | null) => {
@@ -43,11 +46,19 @@ export default function Cursor() {
   }, []);
 
   return (
-    <div
-      ref={ref}
-      aria-hidden
-      className="cursor-dot"
-      style={{ transform: "translate(-100px, -100px)" }}
-    />
+    <>
+      <div
+        ref={ringRef}
+        aria-hidden
+        className="cursor-ring"
+        style={{ transform: "translate(-100px, -100px)" }}
+      />
+      <div
+        ref={dotRef}
+        aria-hidden
+        className="cursor-dot"
+        style={{ transform: "translate(-100px, -100px)" }}
+      />
+    </>
   );
 }

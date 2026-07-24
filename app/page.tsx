@@ -3,13 +3,12 @@ import SceneLoader from "./components/scene-loader";
 import Gsap from "./components/gsap";
 
 const works = [
-  { title: "Nebula Dashboard", tag: "Web App / 3D Data Viz", year: "2026" },
-  { title: "Orbit Commerce", tag: "E-commerce / Motion", year: "2025" },
-  { title: "Pulse Studio", tag: "Brand Site / WebGL", year: "2025" },
-  { title: "Atlas Journal", tag: "Editorial / Interaction", year: "2024" },
+  { title: "Diginvited", tag: "Nextjs / Invitations App", year: "2025" },
+  { title: "KASR", tag: "Flutter / E-commerce", year: "2025" },
+  { title: "LaundryIN", tag: "Flutter / E-commerce", year: "2025" },
 ];
 
-const marqueeItems = ["Design", "Development", "Motion", "3D", "WebGL", "GSAP"];
+const marqueeItems = ["Design", "Development", "Motion", "WebGL", "GSAP"];
 
 const navLinks = [
   { label: "Work", href: "#work" },
@@ -26,7 +25,7 @@ export default function Home() {
         <header className="fixed top-0 z-10 flex w-full items-center justify-between bg-background/50 px-6 py-5 font-mono text-xs uppercase tracking-wider backdrop-blur-md md:px-12 md:tracking-widest">
           <span>
             <span className="sm:hidden">BCT — ©2026</span>
-            <span className="hidden sm:inline">Blek Creative Tech — ©2026</span>
+            <span className="hidden sm:inline">Blek Creative Tech</span>
           </span>
           <nav className="flex gap-4 sm:gap-6">
             {navLinks.map((l) => (
@@ -135,7 +134,7 @@ export default function Home() {
               className="text-[10vw] leading-none font-bold tracking-tighter uppercase transition-colors hover:text-accent md:text-[7vw]"
             >
               Let&apos;s Talk{" "}
-              <ArrowUpRight className="inline size-[0.7em]" aria-hidden />
+              <ArrowUpRight className="inline size-[0.7em] " aria-hidden />
             </a>
           </section>
         </main>

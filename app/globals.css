@@ -69,29 +69,41 @@ body {
 }
 
 /* Custom circular cursor */
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  width: 48px;
+  height: 48px;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  border-radius: 9999px;
+  pointer-events: none;
+  transition:
+    transform 0.15s ease-out,
+    opacity 0.2s ease-out;
+  display: none;
+}
+
 .cursor-dot {
   position: fixed;
   top: 0;
   left: 0;
   z-index: 50;
-  width: 10px;
-  height: 10px;
-  border-radius: 9999px;
+  width: 6px;
+  height: 6px;
   background: #fff;
-  mix-blend-mode: difference;
+  border-radius: 9999px;
   pointer-events: none;
   transition:
-    transform 0.12s ease-out,
+    transform 0.08s ease-out,
     opacity 0.2s ease-out;
   display: none;
 }
 
 @media (pointer: fine) {
-  .cursor-dot {
+  .cursor-ring, .cursor-dot {
     display: block;
-  }
-  * {
-    cursor: none !important;
   }
 }
 
