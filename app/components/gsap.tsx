@@ -13,13 +13,30 @@ export default function Gsap({ children }: { children: React.ReactNode }) {
     gsap.registerPlugin(ScrollTrigger);
     const marqueeCleanups: (() => void)[] = [];
     const ctx = gsap.context(() => {
+      // Hero titles: split by char
+      gsap.utils.toArray<HTMLElement>("[data-hero-title]").forEach((el) => {
+        const text = el.textContent ?? "";
+        el.innerHTML = text
+          .split("")
+          .map((c) => (c === " " ? " " : `<span class="inline-block">${c}</span>`))
+          .join("");
+      });
+      
+      gsap.from("[data-hero-title] span", {
+        yPercent: 120,
+        duration: 1.1,
+        ease: "power4.out",
+        stagger: 0.04,
+        delay: 0.2,
+      });
+
       // Hero intro: masked lines slide up
       gsap.from("[data-hero]", {
         yPercent: 120,
         duration: 1.1,
         ease: "power4.out",
         stagger: 0.09,
-        delay: 0.2,
+        delay: 0.4,
       });
 
       // Generic scroll reveals

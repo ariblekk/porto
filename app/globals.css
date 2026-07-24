@@ -12,8 +12,8 @@
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
   --color-muted: var(--muted);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-space-grotesk);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 html {
@@ -73,32 +73,38 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 50;
-  width: 48px;
-  height: 48px;
-  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  z-index: 9999;
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
   border-radius: 9999px;
   pointer-events: none;
-  transition:
-    transform 0.15s ease-out,
-    opacity 0.2s ease-out;
+  mix-blend-mode: difference;
   display: none;
+  transform: translate(-50%, -50%);
+  will-change: transform, background-color, border-color;
+}
+
+.cursor-ring.hovering {
+  background-color: #fff;
+  border-color: transparent;
+  transform: translate(-50%, -50%) scale(1.5);
 }
 
 .cursor-dot {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 50;
+  z-index: 9999;
   width: 6px;
   height: 6px;
   background: #fff;
   border-radius: 9999px;
   pointer-events: none;
-  transition:
-    transform 0.08s ease-out,
-    opacity 0.2s ease-out;
+  mix-blend-mode: difference;
   display: none;
+  transform: translate(-50%, -50%);
+  will-change: transform;
 }
 
 @media (pointer: fine) {

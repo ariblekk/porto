@@ -24,15 +24,16 @@ export default function Scene() {
 
     let baseZ = 6;
     let lastW = 0;
+    let lastH = 0;
     const fit = () => {
       const w = el.clientWidth;
       const h = el.clientHeight;
       if (!w || !h) return;
-      // ponytail: skip buffer realloc on height-only change (mobile URL bar
-      // show/hide) — canvas CSS stretches via size-full. Add h to the check
-      // if pixel-perfect height ever matters.
-      if (w !== lastW) {
+      
+      // Update on both width and height changes to prevent stretching on mobile
+      if (w !== lastW || h !== lastH) {
         lastW = w;
+        lastH = h;
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
         renderer.setSize(w, h, false);
@@ -42,40 +43,69 @@ export default function Scene() {
     };
     fit();
 
-    // Main wireframe icosahedron
-    const mesh = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(1.8, 1),
+    // Planet Group (for consistent tilt and orbit)
+    const planetGroup = new THREE.Group();
+    // Fixed tilt for the whole system
+    planetGroup.rotation.x = 0.4;
+    planetGroup.rotation.z = 0.2;
+    scene.add(planetGroup);
+
+    // Central Planet (Geodesic Sphere)
+    const planet = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(1.5, 3), 
       new THREE.MeshBasicMaterial({
         color: 0xc6ff3e,
         wireframe: true,
         transparent: true,
-        opacity: 0.35,
+        opacity: 0.25,
       }),
     );
-    scene.add(mesh);
+    planetGroup.add(planet);
 
-    // Larger, fainter outer shell
-    const shell = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(2.6, 0),
-      new THREE.MeshBasicMaterial({
-        color: 0xededed,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.08,
-      }),
-    );
-    scene.add(shell);
+    // Orbit Rings
+    // We use a clean solid line (wireframe: false) to avoid messy overlapping geometry
+    const ringMaterial = new THREE.MeshBasicMaterial({
+      color: 0xc6ff3e,
+      wireframe: false, 
+      transparent: true,
+      opacity: 0.4,
+    });
+    
+    // Concentric rings on the exact same plane
+    const ring1 = new THREE.Mesh(new THREE.TorusGeometry(2.0, 0.006, 4, 64), ringMaterial);
+    ring1.rotation.x = Math.PI / 2;
+    planetGroup.add(ring1);
 
-    // Particle field
-    const count = 900;
+    const ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.4, 0.01, 4, 64), ringMaterial);
+    ring2.rotation.x = Math.PI / 2;
+    planetGroup.add(ring2);
+    
+    const ring3 = new THREE.Mesh(new THREE.TorusGeometry(3.0, 0.004, 4, 64), ringMaterial);
+    ring3.rotation.x = Math.PI / 2;
+    planetGroup.add(ring3);
+
+    // Particle Galaxy (Disk shape)
+    const count = 1200;
+    const basePositions = new Float32Array(count * 3);
     const positions = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      const r = 3 + Math.random() * 5;
+      // Galaxy disk distribution
+      const r = 2.0 + Math.random() * 8;
       const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      positions[i * 3 + 2] = r * Math.cos(phi);
+      // Thickness decreases as radius increases
+      const y = (Math.random() - 0.5) * (3 / r); 
+      
+      const px = r * Math.cos(theta);
+      const py = y;
+      const pz = r * Math.sin(theta);
+      
+      basePositions[i * 3] = px;
+      basePositions[i * 3 + 1] = py;
+      basePositions[i * 3 + 2] = pz;
+      
+      positions[i * 3] = px;
+      positions[i * 3 + 1] = py;
+      positions[i * 3 + 2] = pz;
     }
     const particleGeo = new THREE.BufferGeometry();
     particleGeo.setAttribute(
@@ -102,8 +132,8 @@ export default function Scene() {
     };
     window.addEventListener("mousemove", onMouse);
 
-    const onResize = () => fit();
-    window.addEventListener("resize", onResize);
+    const resizeObserver = new ResizeObserver(() => fit());
+    resizeObserver.observe(el);
 
     let raf = 0;
     let progress = 0;
@@ -111,20 +141,64 @@ export default function Scene() {
     const tick = () => {
       timer.update();
       const t = timer.getElapsed();
-      // ponytail: lerped+clamped progress — mobile URL bar toggling changes
-      // innerHeight mid-scroll and made the raw value jump (scene snapped
-      // back). Smoothing absorbs it; clamp kills iOS rubber-band negatives.
-      const max = Math.max(
-        document.body.scrollHeight - window.innerHeight,
-        1,
-      );
-      const target = Math.min(Math.max(window.scrollY / max, 0), 1);
+      
+      const max = Math.max(document.body.scrollHeight, 1000);
+      const target = (window.scrollY / max) * 1.5; 
       progress += (target - progress) * 0.08;
 
-      mesh.rotation.y = t * 0.15 + progress * Math.PI * 2;
-      mesh.rotation.x = t * 0.08 + progress * Math.PI;
-      shell.rotation.y = -t * 0.05;
-      particles.rotation.y = t * 0.02;
+      // Animate Planet Group (slowly revolves and reacts to scroll)
+      planetGroup.rotation.y = t * 0.05 + progress * Math.PI * 2;
+      
+      // The planet itself spins smoothly on its own Y axis
+      planet.rotation.y = t * 0.15;
+
+      // Galaxy rotation
+      particles.rotation.y = t * 0.03 + progress * Math.PI * 0.5;
+      particles.rotation.z = Math.sin(t * 0.1) * 0.05; // slight wobble
+
+      // Particle Repulsion Logic
+      const mouseWorldX = mouse.x * 4;
+      const mouseWorldY = -mouse.y * 4;
+      
+      const angle = -particles.rotation.y;
+      const cosA = Math.cos(angle);
+      const sinA = Math.sin(angle);
+      // reverse rotation for mouse to match particles local space
+      const localMouseX = mouseWorldX * cosA - 0 * sinA;
+      const localMouseZ = mouseWorldX * sinA + 0 * cosA;
+      const localMouseY = mouseWorldY;
+
+      const posAttribute = particles.geometry.attributes.position;
+      const arr = posAttribute.array as Float32Array;
+
+      for (let i = 0; i < count; i++) {
+        const bx = basePositions[i * 3];
+        const by = basePositions[i * 3 + 1];
+        const bz = basePositions[i * 3 + 2];
+
+        const dx = bx - localMouseX;
+        const dy = by - localMouseY;
+        const dz = bz - localMouseZ;
+        const distSq = dx * dx + dy * dy + dz * dz;
+
+        const maxDist = 2.0;
+        let targetX = bx;
+        let targetY = by;
+        let targetZ = bz;
+
+        if (distSq < maxDist * maxDist) {
+          const dist = Math.sqrt(distSq);
+          const force = Math.pow((maxDist - dist) / maxDist, 2);
+          targetX = bx + (dx / dist) * force * 1.5;
+          targetY = by + (dy / dist) * force * 1.5;
+          targetZ = bz + (dz / dist) * force * 1.5;
+        }
+
+        arr[i * 3] += (targetX - arr[i * 3]) * 0.1;
+        arr[i * 3 + 1] += (targetY - arr[i * 3 + 1]) * 0.1;
+        arr[i * 3 + 2] += (targetZ - arr[i * 3 + 2]) * 0.1;
+      }
+      posAttribute.needsUpdate = true;
 
       camera.position.x += (mouse.x * 0.8 - camera.position.x) * 0.05;
       camera.position.y += (-mouse.y * 0.5 - camera.position.y) * 0.05;
@@ -144,9 +218,9 @@ export default function Scene() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("mousemove", onMouse);
-      window.removeEventListener("resize", onResize);
+      resizeObserver.disconnect();
       renderer.dispose();
-      geoDispose(mesh, shell, particles);
+      geoDispose(planet, ring1, ring2, ring3, particles);
       el.removeChild(renderer.domElement);
     };
   }, []);
@@ -155,7 +229,9 @@ export default function Scene() {
     <div
       ref={ref}
       aria-hidden
-      className="fixed inset-0 -z-10 [&>canvas]:block [&>canvas]:size-full"
+      // Gunakan h-[100lvh] (Large Viewport Height) agar tinggi div tidak berubah-ubah
+      // saat URL bar muncul/hilang, sehingga tidak men-trigger resize event berulang kali.
+      className="fixed top-0 left-0 w-screen h-[100lvh] -z-10 [&>canvas]:block [&>canvas]:size-full"
     />
   );
 }
