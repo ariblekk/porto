@@ -3,9 +3,9 @@ import SceneLoader from "./components/scene-loader";
 import Gsap from "./components/gsap";
 
 const works = [
-  { title: "Diginvited", tag: "Nextjs / Invitations App", year: "2025" },
-  { title: "KASR", tag: "Flutter / E-commerce", year: "2025" },
-  { title: "LaundryIN", tag: "Flutter / E-commerce", year: "2025" },
+  { title: "Diginvited", tag: "Nextjs / Invitations App", year: "2025", link: "https://diginvited.cloud" },
+  { title: "KASR", tag: "Flutter / E-commerce", year: "2025", link: "#" },
+  { title: "LaundryIN", tag: "Flutter / E-commerce", year: "2025", link: "#" },
 ];
 
 const marqueeItems = ["Design", "Development", "Motion", "WebGL", "GSAP"];
@@ -84,7 +84,9 @@ export default function Home() {
               {works.map((w, i) => (
                 <li key={w.title} data-animate>
                   <a
-                    href="#contact"
+                    href={w.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group flex items-baseline justify-between gap-4 border-b border-foreground/10 py-6 transition-colors hover:border-accent sm:py-8"
                   >
                     <span className="flex items-baseline gap-4 sm:gap-6">
@@ -131,10 +133,10 @@ export default function Home() {
             <a
               data-animate
               href="mailto:hello@blekcreative.tech"
-              className="text-[10vw] leading-none font-bold tracking-tighter uppercase transition-colors hover:text-accent md:text-[7vw]"
+              className="group text-[10vw] leading-none font-bold tracking-tighter uppercase transition-colors hover:text-accent md:text-[7vw]"
             >
               Let&apos;s Talk{" "}
-              <ArrowUpRight className="inline size-[0.7em] " aria-hidden />
+              <ArrowUpRight className="inline size-[0.7em] transition-transform duration-300 group-hover:translate-x-4 group-hover:-translate-y-4" aria-hidden />
             </a>
           </section>
         </main>
@@ -142,9 +144,9 @@ export default function Home() {
         <footer className="flex flex-col items-center gap-4 border-t border-foreground/10 bg-background/50 px-6 py-6 font-mono text-xs text-muted backdrop-blur-md sm:flex-row sm:justify-between md:px-12">
           <span>© 2026 Blek Creative Tech</span>
           <div className="flex gap-4 sm:gap-6">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-accent">GitHub</a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-accent">LinkedIn</a>
-            <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-accent">X</a>
+            <a href="https://github.com/ariblekk" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-accent">GitHub</a>
+            <a href="https://www.instagram.com/ariharyanto_/" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-accent">Instagram</a>
+            <a href="https://www.tiktok.com/@ariharyanto_" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-accent">TikTok</a>
           </div>
         </footer>
       </Gsap>

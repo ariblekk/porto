@@ -28,17 +28,17 @@ export default function Scene() {
       const w = el.clientWidth;
       const h = el.clientHeight;
       if (!w || !h) return;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
       // ponytail: skip buffer realloc on height-only change (mobile URL bar
       // show/hide) — canvas CSS stretches via size-full. Add h to the check
       // if pixel-perfect height ever matters.
       if (w !== lastW) {
         lastW = w;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
         renderer.setSize(w, h, false);
+        // responsive: pull camera back on narrow screens so the mesh fits
+        baseZ = camera.aspect < 1 ? 6 / camera.aspect : 6;
       }
-      // responsive: pull camera back on narrow screens so the mesh fits
-      baseZ = camera.aspect < 1 ? 6 / camera.aspect : 6;
     };
     fit();
 
