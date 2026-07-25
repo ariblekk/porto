@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://blekcreativet.com/sitemap.xml",
+    sitemap: "https://iam.blek.my.id/sitemap.xml",
   };
 }

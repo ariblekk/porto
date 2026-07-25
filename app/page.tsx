@@ -5,6 +5,7 @@ import ProjectPreview from "./components/project-preview";
 
 import Magnetic from "./components/magnetic";
 import { SiNextdotjs, SiTypescript, SiTailwindcss, SiGsap, SiFlutter, SiPostgresql, SiSupabase, SiDocker } from 'react-icons/si';
+import { db } from "@/lib/db";
 
 const marquee = [
   { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
@@ -17,22 +18,15 @@ const marquee = [
   { node: <SiDocker />, title: "Docker", href: "https://www.docker.com/" },
 ];
 
-
-const works = [
-  { title: "Diginvited", tag: "Nextjs / Invitations App", year: "2025", link: "https://diginvited.cloud", image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=800&auto=format&fit=crop" },
-  { title: "Berkah Jaya Motor", tag: "Nextjs / Portfolio", year: "2025", link: "https://berkahjayamotor.my.id/", image: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?q=80&w=800&auto=format&fit=crop" },
-  { title: "KASR", tag: "Flutter / E-commerce", year: "2025", link: "#", image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop" },
-  { title: "LaundryIN", tag: "Flutter / E-commerce", year: "2026", link: "https://github.com/f1ndah/laundryin", image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=800&auto=format&fit=crop" },
-
-];
-
 const navLinks = [
   { label: "Work", href: "#work" },
   { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const works = await db.work.findMany({ orderBy: { order: "asc" } });
+
   return (
     <>
       <SceneLoader />
@@ -89,7 +83,7 @@ export default function Home() {
                           target="_blank"
                           rel="noopener noreferrer"
                           tabIndex={half === 1 || rep > 0 ? -1 : undefined}
-                          className="flex items-center gap-3 px-6 transition-transform duration-250 hover:scale-115 hover:text-accent origin-center inline-flex"
+                          className="flex items-center gap-1 px-6 transition-transform duration-250 hover:scale-115 hover:text-accent origin-center inline-flex"
                         >
                           <span className="text-sm sm:text-base" aria-hidden>{item.node}</span>
                           <span>{item.title}</span>
@@ -111,7 +105,7 @@ export default function Home() {
             <ul>
               {works.map((w, i) => (
                 <li key={w.title} data-animate>
-                  <ProjectPreview imageUrl={w.image}>
+                  <ProjectPreview imageUrl={w.image} >
                     <a
                       href={w.link}
                       target="_blank"
@@ -151,14 +145,10 @@ export default function Home() {
             </h2>
             <div className="space-y-6 text-lg leading-relaxed sm:text-xl md:text-2xl">
               <p data-reveal>
-                Blek Creative Tech is a fullstack developer studio focused on
-                the intersection of design and technology — building fast,
-                expressive products with React, Three.js, and GSAP.
+                I&apos;m a fullstack developer passionate about creating immersive web experiences. With expertise in React, Three.js, and GSAP, I specialize in building interactive and visually stunning applications that engage users and deliver seamless performance.
               </p>
               <p data-reveal className="text-muted">
-                From concept to deployment, front to back: buttery animations,
-                solid APIs, accessible markup, and code that&apos;s easy to
-                maintain.
+                I&apos;m always eager to explore new technologies and push the boundaries of web development. Whether it&apos;s crafting dynamic user interfaces, optimizing performance, or implementing cutting-edge animations, I strive to deliver exceptional digital experiences that leave a lasting impact.
               </p>
             </div>
           </section>

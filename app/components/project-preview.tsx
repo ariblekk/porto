@@ -78,7 +78,7 @@ export default function ProjectPreview({ children, imageUrl }: ProjectPreviewPro
               src={imageUrl}
               alt="Project Preview"
               fill
-              className="object-cover"
+              className="object-cover hidden sm:block"
             />
           </div>,
           document.body

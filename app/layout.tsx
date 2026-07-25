@@ -14,7 +14,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://blekcreativet.com"),
+  metadataBase: new URL(process.env.BASEURL || "https://iam.blek.my.id"),
   title: {
     default: "Blek Creative Tech — Fullstack Developer",
     template: "%s | Blek Creative Tech",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://blekcreativet.com",
+    url: process.env.BASEURL || "https://iam.blek.my.id",
     title: "Blek Creative Tech — Fullstack Developer",
     description:
       "Portfolio of Blek Creative Tech, a fullstack developer building immersive web experiences with React, Three.js, and GSAP.",
