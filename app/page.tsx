@@ -1,16 +1,30 @@
-import { ArrowUpRight, Dot } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import SceneLoader from "./components/scene-loader";
 import Gsap from "./components/gsap";
-import Magnetic from "./components/magnetic";
+import Header from "./components/Header";
 import ProjectPreview from "./components/project-preview";
+
+import Magnetic from "./components/magnetic";
+import LogoLoop from './components/LogoLoop';
+import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiGsap, SiFlutter } from 'react-icons/si';
+
+const techLogos = [
+  { node: <SiReact />, title: "React", href: "https://react.dev" },
+  { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
+  { node: <SiTypescript />, title: "TypeScript", href: "https://www.typescriptlang.org" },
+  { node: <SiTailwindcss />, title: "Tailwind CSS", href: "https://tailwindcss.com" },
+  { node: <SiGsap />, title: "GSAP", href: "https://greensock.com/gsap/" },
+  { node: <SiFlutter />, title: "Flutter", href: "https://flutter.dev/" },
+];
+
 
 const works = [
   { title: "Diginvited", tag: "Nextjs / Invitations App", year: "2025", link: "https://diginvited.cloud", image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=800&auto=format&fit=crop" },
+  { title: "Berkah Jaya Motor", tag: "Nextjs / Portfolio", year: "2025", link: "https://berkahjayamotor.my.id/", image: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?q=80&w=800&auto=format&fit=crop" },
   { title: "KASR", tag: "Flutter / E-commerce", year: "2025", link: "#", image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop" },
-  { title: "LaundryIN", tag: "Flutter / E-commerce", year: "2025", link: "#", image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=800&auto=format&fit=crop" },
-];
+  { title: "LaundryIN", tag: "Flutter / E-commerce", year: "2026", link: "https://github.com/f1ndah/laundryin", image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=800&auto=format&fit=crop" },
 
-const marqueeItems = ["Design", "Development", "Motion", "WebGL", "GSAP"];
+];
 
 const navLinks = [
   { label: "Work", href: "#work" },
@@ -23,22 +37,7 @@ export default function Home() {
     <>
       <SceneLoader />
       <Gsap>
-        {/* Nav */}
-        <header className="fixed top-0 z-10 flex w-full items-center justify-between bg-background/50 px-6 py-5 font-mono text-xs uppercase tracking-wider backdrop-blur-md md:px-12 md:tracking-widest">
-          <span>
-            <span className="sm:hidden">BCT — ©2026</span>
-            <span className="hidden sm:inline">Blek Creative Tech</span>
-          </span>
-          <nav className="flex gap-4 sm:gap-6">
-            {navLinks.map((l) => (
-              <Magnetic key={l.href}>
-                <a href={l.href} className="glitch p-2" data-hover>
-                  {l.label}
-                </a>
-              </Magnetic>
-            ))}
-          </nav>
-        </header>
+        <Header navLinks={navLinks} />
 
         <main>
           {/* Hero */}
@@ -63,20 +62,20 @@ export default function Home() {
           </section>
 
           {/* Marquee */}
-          <div className="overflow-hidden border-y border-foreground/10 py-4" aria-hidden>
-            <div data-marquee className="flex w-max font-mono text-xs uppercase tracking-widest whitespace-nowrap will-change-transform sm:text-sm">
-              {[0, 1].map((half) => (
-                <div key={half} className="flex shrink-0">
-                  {[...Array(4)].flatMap((_, rep) =>
-                    marqueeItems.map((item) => (
-                      <span key={`${rep}-${item}`} className="flex items-center gap-6 px-6">
-                        {item} <Dot className="size-4 text-accent" aria-hidden />
-                      </span>
-                    )),
-                  )}
-                </div>
-              ))}
-            </div>
+          <div style={{ position: 'relative', overflow: 'hidden' }}>
+            {/* Basic horizontal loop */}
+            <LogoLoop
+              logos={techLogos}
+              speed={80}
+              direction="left"
+              logoHeight="clamp(35px, 5vw, 60px)"
+              gap="clamp(40px, 5vw, 60px)"
+              hoverSpeed={0}
+              scaleOnHover
+              fadeOut
+              fadeOutColor="#0a0a0a"
+              ariaLabel="Technology partners"
+            />
           </div>
 
           {/* Work */}
@@ -98,8 +97,16 @@ export default function Home() {
                         <span className="font-mono text-xs text-muted">
                           0{i + 1}
                         </span>
-                        <span className="text-2xl font-semibold tracking-tight transition-transform duration-300 group-hover:translate-x-2 group-hover:text-accent sm:text-3xl md:text-5xl">
-                          {w.title}
+                        <span className="flex flex-col">
+                          <span className="text-2xl font-semibold tracking-tight transition-transform duration-300 group-hover:translate-x-2 group-hover:text-accent sm:text-3xl md:text-5xl">
+                            {w.title}
+                          </span>
+                          <span className="font-mono text-xs text-muted md:hidden mt-1">
+                            {w.tag} — {w.year}
+                          </span>
+                        </span>
+                        <span className=" font-mono text-xs text-muted sm:block">
+                          <ArrowUpRight className="size-4 text-muted transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-accent" aria-hidden />
                         </span>
                       </span>
                       <span className="hidden font-mono text-xs text-muted sm:block">
