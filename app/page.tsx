@@ -1,14 +1,12 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Dot } from "lucide-react";
 import SceneLoader from "./components/scene-loader";
 import Gsap from "./components/gsap";
-import Header from "./components/Header";
 import ProjectPreview from "./components/project-preview";
 
 import Magnetic from "./components/magnetic";
-import LogoLoop from './components/LogoLoop';
 import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiGsap, SiFlutter } from 'react-icons/si';
 
-const techLogos = [
+const marquee = [
   { node: <SiReact />, title: "React", href: "https://react.dev" },
   { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
   { node: <SiTypescript />, title: "TypeScript", href: "https://www.typescriptlang.org" },
@@ -37,7 +35,22 @@ export default function Home() {
     <>
       <SceneLoader />
       <Gsap>
-        <Header navLinks={navLinks} />
+        {/* Nav */}
+        <header className="fixed top-0 z-10 flex w-full items-center justify-between bg-background/50 px-6 py-2 font-mono text-xs uppercase tracking-wider backdrop-blur-md md:px-12 md:tracking-widest">
+          <span>
+            <span className="sm:hidden">BCT — ©2026</span>
+            <span className="hidden sm:inline">Blek Creative Tech</span>
+          </span>
+          <nav className="flex gap-4 sm:gap-6">
+            {navLinks.map((l) => (
+              <Magnetic key={l.href}>
+                <a href={l.href} className="glitch p-2" data-hover>
+                  {l.label}
+                </a>
+              </Magnetic>
+            ))}
+          </nav>
+        </header>
 
         <main>
           {/* Hero */}
@@ -62,20 +75,30 @@ export default function Home() {
           </section>
 
           {/* Marquee */}
-          <div style={{ position: 'relative', overflow: 'hidden' }}>
-            {/* Basic horizontal loop */}
-            <LogoLoop
-              logos={techLogos}
-              speed={80}
-              direction="left"
-              logoHeight="clamp(35px, 5vw, 60px)"
-              gap="clamp(40px, 5vw, 60px)"
-              hoverSpeed={0}
-              scaleOnHover
-              fadeOut
-              fadeOutColor="#0a0a0a"
-              ariaLabel="Technology partners"
-            />
+          <div className="overflow-hidden border-y border-foreground/10 py-4">
+            <div data-marquee className="flex w-max font-mono text-xs uppercase tracking-widest whitespace-nowrap will-change-transform sm:text-sm">
+              {[0, 1].map((half) => (
+                <div key={half} className="flex shrink-0" aria-hidden={half === 1 ? "true" : undefined}>
+                  {[...Array(4)].flatMap((_, rep) =>
+                    marquee.map((item, idx) => (
+                      <span key={`${rep}-${idx}`} className="flex items-center">
+                        <a
+                          href={item.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          tabIndex={half === 1 || rep > 0 ? -1 : undefined}
+                          className="flex items-center gap-3 px-6 transition-transform duration-250 hover:scale-115 hover:text-accent origin-center inline-flex"
+                        >
+                          <span className="text-sm sm:text-base" aria-hidden>{item.node}</span>
+                          <span>{item.title}</span>
+                        </a>
+                        <Dot className="size-4 text-accent" aria-hidden />
+                      </span>
+                    )),
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Work */}
