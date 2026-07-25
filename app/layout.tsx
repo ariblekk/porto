@@ -14,6 +14,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://blekcreativet.com"),
   title: {
     default: "Blek Creative Tech — Fullstack Developer",
     template: "%s | Blek Creative Tech",
@@ -39,21 +40,12 @@ export const metadata: Metadata = {
     description:
       "Portfolio of Blek Creative Tech, a fullstack developer building immersive web experiences with React, Three.js, and GSAP.",
     siteName: "Blek Creative Tech",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Blek Creative Tech",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Blek Creative Tech — Fullstack Developer",
     description:
       "Portfolio of Blek Creative Tech, a fullstack developer building immersive web experiences with React, Three.js, and GSAP.",
-    images: ["/og-image.jpg"],
     creator: "@blekcreative",
   },
   robots: {

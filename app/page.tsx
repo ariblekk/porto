@@ -4,15 +4,17 @@ import Gsap from "./components/gsap";
 import ProjectPreview from "./components/project-preview";
 
 import Magnetic from "./components/magnetic";
-import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiGsap, SiFlutter } from 'react-icons/si';
+import { SiNextdotjs, SiTypescript, SiTailwindcss, SiGsap, SiFlutter, SiPostgresql, SiSupabase, SiDocker } from 'react-icons/si';
 
 const marquee = [
-  { node: <SiReact />, title: "React", href: "https://react.dev" },
   { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
   { node: <SiTypescript />, title: "TypeScript", href: "https://www.typescriptlang.org" },
   { node: <SiTailwindcss />, title: "Tailwind CSS", href: "https://tailwindcss.com" },
   { node: <SiGsap />, title: "GSAP", href: "https://greensock.com/gsap/" },
   { node: <SiFlutter />, title: "Flutter", href: "https://flutter.dev/" },
+  { node: <SiPostgresql />, title: "PostgreSQL", href: "https://www.postgresql.org/" },
+  { node: <SiSupabase />, title: "Supabase", href: "https://supabase.com/" },
+  { node: <SiDocker />, title: "Docker", href: "https://www.docker.com/" },
 ];
 
 
